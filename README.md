@@ -26,3 +26,86 @@ Q1 F
 
 <img width="419" height="70" alt="image" src="https://github.com/user-attachments/assets/15791518-9430-4a3d-8a5c-429db7cff48e" />
 
+Question 2 
+
+<img width="418" height="68" alt="image" src="https://github.com/user-attachments/assets/d122a381-c2df-4d2f-8051-aab9cbc516bc" />
+
+Q2 A
+
+<img width="418" height="68" alt="image" src="https://github.com/user-attachments/assets/338fa56e-bddf-454f-8624-a85c29b7c551" />
+
+Q2 B 
+
+<img width="420" height="71" alt="image" src="https://github.com/user-attachments/assets/7711e447-2ed3-47dd-b58e-65f41f018c84" />
+
+Q2 C 
+
+<img width="418" height="68" alt="image" src="https://github.com/user-attachments/assets/d122a381-c2df-4d2f-8051-aab9cbc516bc" />
+
+Q2 D 
+
+<img width="420" height="70" alt="image" src="https://github.com/user-attachments/assets/b7f1d69a-04ee-4201-8ed2-d34d57cf638f" />
+
+Q2 E 
+
+<img width="418" height="69" alt="image" src="https://github.com/user-attachments/assets/5b4a4f5a-ee60-4172-b487-9972e1de4c5b" />
+
+Q2 F 
+
+<img width="421" height="64" alt="image" src="https://github.com/user-attachments/assets/61a29d3f-a8c0-437d-9ca7-4ae94d9b6af1" />
+
+Question 3 
+
+<img width="419" height="70" alt="image" src="https://github.com/user-attachments/assets/e8988715-dec3-43f4-bae3-0e932fe86988" />
+
+Q3 A
+
+<img width="419" height="68" alt="image" src="https://github.com/user-attachments/assets/26cd187d-6617-40eb-9d91-a78d33796741" />
+
+Q3 B
+
+<img width="419" height="69" alt="image" src="https://github.com/user-attachments/assets/b100a38d-6bd2-4447-94d8-c48478b3d9be" />
+
+Q3 C
+
+<img width="419" height="72" alt="image" src="https://github.com/user-attachments/assets/b8131229-c459-4797-b29a-5c0238365f5e" />
+
+Q3 D
+
+<img width="418" height="63" alt="image" src="https://github.com/user-attachments/assets/572a02e1-f401-44bf-945a-68393156499f" />
+
+Q3 E
+
+<img width="420" height="70" alt="image" src="https://github.com/user-attachments/assets/0ae69c45-ccf6-4b4e-b9eb-7cd4eeccc7a1" />
+
+Q3 F
+
+<img width="419" height="70" alt="image" src="https://github.com/user-attachments/assets/e8988715-dec3-43f4-bae3-0e932fe86988" />
+
+Question 4 
+
+<img width="421" height="67" alt="image" src="https://github.com/user-attachments/assets/eb40004c-f290-4912-b4ab-7d7ec1b82070" />
+
+Q4 A
+
+<img width="421" height="67" alt="image" src="https://github.com/user-attachments/assets/eb40004c-f290-4912-b4ab-7d7ec1b82070" />
+
+Q4 B
+
+<img width="418" height="67" alt="image" src="https://github.com/user-attachments/assets/7228fdba-a1cc-443e-8c6f-43425c6641aa" />
+
+Q4 C
+
+<img width="418" height="70" alt="image" src="https://github.com/user-attachments/assets/b793f3b4-736d-4fc1-b79b-1923c0384e95" />
+
+Q4 D
+
+<img width="419" height="68" alt="image" src="https://github.com/user-attachments/assets/6ee04d48-f221-48f3-8df3-fbaad425d1f2" />
+
+Q4 E
+
+<img width="384" height="65" alt="image" src="https://github.com/user-attachments/assets/aef5488c-e738-4bd5-a48c-64517f525adb" />
+
+Q4 F
+
+<img width="420" height="71" alt="image" src="https://github.com/user-attachments/assets/a3e32989-68ba-4744-936d-5179d24d52f0" />
