@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=0.8">
     <title>Auditory Rhythm Matching Survey</title>
     
 <script src="https://cdn.tailwindcss.com"></script>
@@ -648,6 +648,8 @@
             
             // NEW: Initialize state (disable everything until original played)
             initQuestionState(currentPage);
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         /**
@@ -736,6 +738,8 @@
                 // Final submission (Q5)
                 submitSurvey();
             }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         
         // --- NEW: State Management Logic ---
