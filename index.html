@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auditory Rhythm Matching Survey</title>
+    
+<script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Styles for Aesthetics */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .question-card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+        /* Define the visual style for the selected option button */
+        .active-option {
+            background-color: #3b82f6 !important; /* Blue-500 */
+            color: white !important;
+            border-color: #2563eb !important; /* Blue-600 */
+            font-weight: 700;
+        }
+        .rating-option {
+            transition: all 0.15s;
+            cursor: pointer;
+            user-select: none;
+            flex-shrink: 0; 
+            border: 1px solid #d1d5db; /* Ensure border is visible against white/light colors */
+            color: #1f2937; /* Dark text for readability on light backgrounds */
+        }
+        .rating-option:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        /* Style for the disabled main play button */
+        .cursor-not-allowed {
+            cursor: not-allowed;
+        }
+        
+        /* --- NEW STYLES FOR LOGIC ENFORCEMENT --- */
+        .disabled-interaction {
+            opacity: 0.5;
+            pointer-events: none;
+            filter: grayscale(100%);
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8 flex justify-center min-h-screen">
+    <div id="app-container" class="w-full max-w-4xl">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Auditory Rhythm Matching Study (4 Questions)</h1>
+
+        
+<div id="survey-content">
+            
+<div id="q-consent" class="question-card bg-white p-8 rounded-xl">
+    <h2 class="text-2xl font-semibold mb-4 text-indigo-600">Study Consent and Disclosure</h2>
+    <div class="space-y-4 text-gray-700">
+        <p>
+            This is a short rhythmic memory quiz, which is being used in an experiment project for CS 6795: Introduction to Cognitive Science at Georgia Tech.
+        </p>
+        <p>
+            By proceeding, you agree to participate in this short-term auditory memory recall study. Your input will be used for research purposes only. 
+            All responses are anonymous and confidential.
+        </p>
+        <p class="font-bold text-lg">Instructions:</p>
+        <ul class="list-disc list-inside ml-4 space-y-1">
+            <li>The Original Rhythm may be played up to three (3) times.</li>
+            <li>Playing any Option Rhythm will disable the Original Rhythm play button. Rely on your memory!</li>
+            <li>You must rate all options (1-5) before moving to the next question.</li>
+        </ul>
+    </div>
+
+    <div class="mt-8 border-t pt-6 space-y-4">
+        <label for="consent-name" class="block text-sm font-medium text-gray-700">
+            Consent: Please type your name to acknowledge the disclosure above. (Your name will be used by the survey owner for debugging purposes only. The survey is entirely anonymous otherwise. Your name is deleted from the data after 24 hours.)
+        </label>
+        <input type="text" id="consent-name" placeholder="Name" required
+               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+    </div>
+
+    <div class="mt-6 space-y-4">
+        <label for="musical-history" class="block text-sm font-medium text-gray-700">
+            Musical Background: Any musical history? (e.g., played an instrument for 5 years, took singing lessons, no history at all)
+        </label>
+        <textarea id="musical-history" rows="3" placeholder="Briefly describe any musical experience."
+               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+    </div>
+
+    <div class="mt-6 pt-4 border-t space-y-4">
+<!--
+        <button id="dev-info" onclick="showTestSetupInfo()"
+                class="w-full py-2 bg-gray-500 text-white font-bold rounded-lg shadow-md hover:bg-gray-700 transition duration-150 text-sm">
+            Developer Info (Debug) 🛠️
+        </button>
+-->
+        <button id="start-survey" onclick="startSurvey()"
+                class="w-full py-3 bg-indigo-500 text-white font-bold rounded-lg shadow-md hover:bg-indigo-700 transition duration-150">
+            Start Survey &rarr;
+        </button>
+    </div>
+</div>
+
+<div id="q-1" class="question-card bg-white p-6 rounded-xl hidden">
+    <h2 class="text-2xl font-semibold mb-4 text-indigo-600">PRACTICE QUESTION</h2>
+    <div class="mb-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+        <p class="font-medium text-gray-700 mb-2">Original Rhythm (Question):</p>
+        <div id="play-controls-q1">
+            <audio id="audio-q1" src="audio/question_dummy.mp3" preload="auto"></audio>
+            <button id="play-button-q1" onclick="handlePlayClick(1)" 
+                    class="w-full py-2 px-4 bg-indigo-500 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition duration-150">
+                Play Original Rhythm (Total Plays: <span id="plays-1">0</span>)
+            </button>
+        </div>
+        <p class="mt-3 text-sm text-gray-500">Time elapsed since first play: <span id="time-1" class="font-bold text-gray-800">0.00</span>s</p>
+    </div>
+
+    <p class="font-semibold text-gray-800 mb-3 text-lg">
+        For each option: Is it the same rhythm?
+    </p>
+    <div class="text-sm text-gray-500 mb-4 flex justify-between">
+        <span class="font-bold text-red-500">1 = Not a Match at all</span>
+        <span class="font-bold text-green-500">5 = Perfect Match</span>
+    </div>
+
+    <div id="options-1" class="space-y-4">
+        
+        <div class="p-3 border rounded-lg flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-50">
+            <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                <span class="font-bold text-lg w-8">A.</span>
+                <audio id="audio-1-A" src="audio/q1_option_A.mp3" preload="auto" class="hidden"></audio>
+                <button id="btn-play-1-A" onclick="playOption(1, 'A')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">Play Option A</button>
+            </div>
+            <div id="rating-container-1-A" class="w-full sm:w-auto overflow-x-auto"></div>
+        </div>
+        
+        <div class="p-3 border rounded-lg flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-50">
+            <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                <span class="font-bold text-lg w-8">B.</span>
+                <audio id="audio-1-B" src="audio/q1_option_B.mp3" preload="auto" class="hidden"></audio>
+                <button id="btn-play-1-B" onclick="playOption(1, 'B')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">Play Option B</button>
+            </div>
+            <div id="rating-container-1-B" class="w-full sm:w-auto overflow-x-auto"></div>
+        </div>
+    </div>
+
+    <div class="mt-6 pt-4 border-t">
+        <button id="next-1" onclick="nextQuestion(1)" disabled
+                class="w-full py-3 bg-gray-400 text-white font-bold rounded-lg transition duration-150"
+                title="Please rate all 2 options to proceed.">
+            Next Question &rarr;
+        </button>
+    </div>
+</div>
+            
+<div id="q-2" class="question-card bg-white p-6 rounded-xl hidden">
+    <h2 class="text-2xl font-semibold mb-4 text-indigo-600">Question 1 of 4</h2>
+    <div class="mb-6 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+        <p class="font-medium text-gray-700 mb-2">Original Rhythm (Question):</p>
+        <div id="play-controls-q2">
+            <audio id="audio-q2" src="audio/question_2.mp3" preload="auto"></audio>
+            <button id="play-button-q2" onclick="handlePlayClick(2)" 
+                    class="w-full py-2 px-4 bg-indigo-500 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition duration-150">
+                Play Original Rhythm (Total Plays: <span id="plays-2">0</span>)
+            </button>
+        </div>
+        <p class="mt-3 text-sm text-gray-500">Time elapsed since first play: <span id="time-2" class="font-bold text-gray-800">0.00</span>s</p>
+    </div>
+
+    <p class="font-semibold text-gray-800 mb-3 text-lg">
+        For each option: Is it the same rhythm?
+    </p>
+    <div class="text-sm text-gray-500 mb-4 flex justify-between">
+        <span class="font-bold text-red-500">1 = Not a Match at all</span>
+        <span class="font-bold text-green-500">5 = Perfect Match</span>
+    </div>
+
+    <div id="options-2" class="space-y-4">
+        
+        <div class="p-3 border rounded-lg flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-50">
+            <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                <span class="font-bold text-lg w-8">A.</span>
+                <audio id="audio-2-A" src="audio/q2_option_A.mp3" preload="auto" class="hidden"></audio>
+                <button id="btn-play-2-A" onclick="playOption(2, 'A')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">
+                    Play Option A
+                </button>
+            </div>
+            <div id="rating-container-2-A" class="w-full sm:w-auto overflow-x-auto"></div>
+        </div>
+        
+        <div class="p-3 border rounded-lg flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-50">
+            <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                <span class="font-bold text-lg w-8">B.</span>
+                <audio id="audio-2-B" src="audio/q2_option_B.mp3" preload="auto" class="hidden"></audio>
+                <button id="btn-play-2-B" onclick="playOption(2, 'B')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">
+                    Play Option B
+                </button>
+            </div>
+            <div id="rating-container-2-B" class="w-full sm:w-auto overflow-x-auto"></div>
+        </div>
+        
+        <div class="p-3 border rounded-lg flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-50">
+            <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                <span class="font-bold text-lg w-8">C.</span>
+                <audio id="audio-2-C" src="audio/q2_option_C.mp3" preload="auto" class="hidden"></audio>
+                <button id="btn-play-2-C" onclick="playOption(2, 'C')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">
+                    Play Option C
+                </button>
+            </div>
+            <div id="rating-container-2-C" class="w-full sm:w-auto overflow-x-auto"></div>
+        </div>
+        
+        <div class="p-3 border rounded-lg flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-50">
+            <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                <span class="font-bold text-lg w-8">D.</span>
+                <audio id="audio-2-D" src="audio/q2_option_D.mp3" preload="auto" class="hidden"></audio>
+                <button id="btn-play-2-D" onclick="playOption(2, 'D')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">
+                    Play Option D
+                </button>
+            </div>
+            <div id="rating-container-2-D" class="w-full sm:w-auto overflow-x-auto"></div>
+        </div>
+        
+        <div class="p-3 border rounded-lg flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-50">
+            <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                <span class="font-bold text-lg w-8">E.</span>
+                <audio id="audio-2-E" src="audio/q2_option_E.mp3" preload="auto" class="hidden"></audio>
+                <button id="btn-play-2-E" onclick="playOption(2, 'E')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">
+                    Play Option E
+                </button>
+            </div>
+            <div id="rating-container-2-E" class="w-full sm:w-auto overflow-x-auto"></div>
+        </div>
+        
+        <div class="p-3 border rounded-lg flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-50">
+            <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                <span class="font-bold text-lg w-8">F.</span>
+                <audio id="audio-2-F" src="audio/q2_option_F.mp3" preload="auto" class="hidden"></audio>
+                <button id="btn-play-2-F" onclick="playOption(2, 'F')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">
+                    Play Option F
+                </button>
+            </div>
+            <div id="rating-container-2-F" class="w-full sm:w-auto overflow-x-auto"></div>
+        </div>
+    </div>
+
+    <div class="mt-6 pt-4 border-t">
+        <button id="next-2" onclick="nextQuestion(2)" disabled
+                class="w-full py-3 bg-gray-400 text-white font-bold rounded-lg transition duration-150"
+                title="Please rate all 6 options to proceed.">
+            Next Question &rarr;
+        </button>
+    </div>
+</div>
+
+<div id="q-3" class="question-card bg-white p-6 rounded-xl hidden">
+    <h2 class="text-2xl font-semibold mb-4 text-indigo-600">Question 2 of 4</h2>
+    <div class="mb-6 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+        <p class="font-medium text-gray-700 mb-2">Original Rhythm (Question):</p>
+        <div id="play-controls-q3">
+            <audio id="audio-q3" src="audio/question_3.mp3" preload="auto"></audio>
+            <button id="play-button-q3" onclick="handlePlayClick(3)" 
+                    class="w-full py-2 px-4 bg-indigo-500 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition duration-150">
+                Play Original Rhythm (Total Plays: <span id="plays-3">0</span>)
+            </button>
+        </div>
+        <p class="mt-3 text-sm text-gray-500">Time elapsed since first play: <span id="time-3" class="font-bold text-gray-800">0.00</span>s</p>
+    </div>
+
+    <p class="font-semibold text-gray-800 mb-3 text-lg">
+        For each option: Is it the same rhythm?
+    </p>
+    <div class="text-sm text-gray-500 mb-4 flex justify-between">
+        <span class="font-bold text-red-500">1 = Not a Match at all</span>
+        <span class="font-bold text-green-500">5 = Perfect Match</span>
+    </div>
+
+    <div id="options-3" class="space-y-4">
+        <div class="p-3 border rounded-lg flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-50">
+            <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                <span class="font-bold text-lg w-8">A.</span>
+                <audio id="audio-3-A" src="audio/q3_option_A.mp3" preload="auto" class="hidden"></audio>
+                <button id="btn-play-3-A" onclick="playOption(3, 'A')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">Play Option A</button>
+            </div>
+            <div id="rating-container-3-A" class="w-full sm:w-auto overflow-x-auto"></div>
+        </div>
+        <div class="p-3 border rounded-lg flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-50">
+            <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                <span class="font-bold text-lg w-8">B.</span>
+                <audio id="audio-3-B" src="audio/q3_option_B.mp3" preload="auto" class="hidden"></audio>
+                <button id="btn-play-3-B" onclick="playOption(3, 'B')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">Play Option B</button>
+            </div>
+            <div id="rating-container-3-B" class="w-full sm:w-auto overflow-x-auto"></div>
+        </div>
+        <div class="p-3 border rounded-lg flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-50">
+            <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                <span class="font-bold text-lg w-8">C.</span>
+                <audio id="audio-3-C" src="audio/q3_option_C.mp3" preload="auto" class="hidden"></audio>
+                <button id="btn-play-3-C" onclick="playOption(3, 'C')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">Play Option C</button>
+            </div>
+            <div id="rating-container-3-C" class="w-full sm:w-auto overflow-x-auto"></div>
+        </div>
+        <div class="p-3 border rounded-lg flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-50">
+            <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                <span class="font-bold text-lg w-8">D.</span>
+                <audio id="audio-3-D" src="audio/q3_option_D.mp3" preload="auto" class="hidden"></audio>
+                <button id="btn-play-3-D" onclick="playOption(3, 'D')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">Play Option D</button>
+            </div>
+            <div id="rating-container-3-D" class="w-full sm:w-auto overflow-x-auto"></div>
+        </div>
+        <div class="p-3 border rounded-lg flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-50">
+            <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                <span class="font-bold text-lg w-8">E.</span>
+                <audio id="audio-3-E" src="audio/q3_option_E.mp3" preload="auto" class="hidden"></audio>
+                <button id="btn-play-3-E" onclick="playOption(3, 'E')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">Play Option E</button>
+            </div>
+            <div id="rating-container-3-E" class="w-full sm:w-auto overflow-x-auto"></div>
+        </div>
+        
+        <div class="p-3 border rounded-lg flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-50">
+            <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                <span class="font-bold text-lg w-8">F.</span>
+                <audio id="audio-3-F" src="audio/q3_option_F.mp3" preload="auto" class="hidden"></audio>
+                <button id="btn-play-3-F" onclick="playOption(3, 'F')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">Play Option F</button>
+            </div>
+            <div id="rating-container-3-F" class="w-full sm:w-auto overflow-x-auto"></div>
+        </div>
+    </div>
+
+    <div class="mt-6 pt-4 border-t">
+        <button id="next-3" onclick="nextQuestion(3)" disabled
+                class="w-full py-3 bg-gray-400 text-white font-bold rounded-lg transition duration-150"
+                title="Please rate all 6 options to proceed.">
+            Next Question &rarr;
+        </button>
+    </div>
+</div>
+
+<div id="q-4" class="question-card bg-white p-6 rounded-xl hidden">
+    <h2 class="text-2xl font-semibold mb-4 text-indigo-600">Question 3 of 4</h2>
+    <div class="mb-6 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+        <p class="font-medium text-gray-700 mb-2">Original Rhythm (Question):</p>
+        <div id="play-controls-q4">
+            <audio id="audio-q4" src="audio/question_4.mp3" preload="auto"></audio>
+            <button id="play-button-q4" onclick="handlePlayClick(4)" 
+                    class="w-full py-2 px-4 bg-indigo-500 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition duration-150">
+                Play Original Rhythm (Total Plays: <span id="plays-4">0</span>)
+            </button>
+        </div>
+        <p class="mt-3 text-sm text-gray-500">Time elapsed since first play: <span id="time-4" class="font-bold text-gray-800">0.00</span>s</p>
+    </div>
+
+    <p class="font-semibold text-gray-800 mb-3 text-lg">
+        For each option: Is it the same rhythm?
+    </p>
+    <div class="text-sm text-gray-500 mb-4 flex justify-between">
+        <span class="font-bold text-red-500">1 = Not a Match at all</span>
+        <span class="font-bold text-green-500">5 = Perfect Match</span>
+    </div>
+
+    <div id="options-4" class="space-y-4">
+        <div class="p-3 border rounded-lg flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-50">
+            <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                <span class="font-bold text-lg w-8">A.</span>
+                <audio id="audio-4-A" src="audio/q4_option_A.mp3" preload="auto" class="hidden"></audio>
+                <button id="btn-play-4-A" onclick="playOption(4, 'A')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">Play Option A</button>
+            </div>
+            <div id="rating-container-4-A" class="w-full sm:w-auto overflow-x-auto"></div>
+        </div>
+        <div class="p-3 border rounded-lg flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-50">
+            <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                <span class="font-bold text-lg w-8">B.</span>
+                <audio id="audio-4-B" src="audio/q4_option_B.mp3" preload="auto" class="hidden"></audio>
+                <button id="btn-play-4-B" onclick="playOption(4, 'B')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">Play Option B</button>
+            </div>
+            <div id="rating-container-4-B" class="w-full sm:w-auto overflow-x-auto"></div>
+        </div>
+        <div class="p-3 border rounded-lg flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-50">
+            <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                <span class="font-bold text-lg w-8">C.</span>
+                <audio id="audio-4-C" src="audio/q4_option_C.mp3" preload="auto" class="hidden"></audio>
+                <button id="btn-play-4-C" onclick="playOption(4, 'C')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">Play Option C</button>
+            </div>
+            <div id="rating-container-4-C" class="w-full sm:w-auto overflow-x-auto"></div>
+        </div>
+        <div class="p-3 border rounded-lg flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-50">
+            <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                <span class="font-bold text-lg w-8">D.</span>
+                <audio id="audio-4-D" src="audio/q4_option_D.mp3" preload="auto" class="hidden"></audio>
+                <button id="btn-play-4-D" onclick="playOption(4, 'D')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">Play Option D</button>
+            </div>
+            <div id="rating-container-4-D" class="w-full sm:w-auto overflow-x-auto"></div>
+        </div>
+        <div class="p-3 border rounded-lg flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-50">
+            <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                <span class="font-bold text-lg w-8">E.</span>
+                <audio id="audio-4-E" src="audio/q4_option_E.mp3" preload="auto" class="hidden"></audio>
+                <button id="btn-play-4-E" onclick="playOption(4, 'E')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">Play Option E</button>
+            </div>
+            <div id="rating-container-4-E" class="w-full sm:w-auto overflow-x-auto"></div>
+        </div>
+        
+        <div class="p-3 border rounded-lg flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-50">
+            <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                <span class="font-bold text-lg w-8">F.</span>
+                <audio id="audio-4-F" src="audio/q4_option_F.mp3" preload="auto" class="hidden"></audio>
+                <button id="btn-play-4-F" onclick="playOption(4, 'F')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">Play Option F</button>
+            </div>
+            <div id="rating-container-4-F" class="w-full sm:w-auto overflow-x-auto"></div>
+        </div>
+    </div>
+
+    <div class="mt-6 pt-4 border-t">
+        <button id="next-4" onclick="nextQuestion(4)" disabled
+                class="w-full py-3 bg-gray-400 text-white font-bold rounded-lg transition duration-150"
+                title="Please rate all 6 options to proceed.">
+            Next Question &rarr;
+        </button>
+    </div>
+</div>
+            
+<div id="q-5" class="question-card bg-white p-6 rounded-xl hidden">
+    <h2 class="text-2xl font-semibold mb-4 text-indigo-600">Question 4 of 4</h2>
+    <div class="mb-6 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+        <p class="font-medium text-gray-700 mb-2">Original Rhythm (Question):</p>
+        <div id="play-controls-q5">
+            <audio id="audio-q5" src="audio/question_5.mp3" preload="auto"></audio>
+            <button id="play-button-q5" onclick="handlePlayClick(5)" 
+                    class="w-full py-2 px-4 bg-indigo-500 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition duration-150">
+                Play Original Rhythm (Total Plays: <span id="plays-5">0</span>)
+            </button>
+        </div>
+        <p class="mt-3 text-sm text-gray-500">Time elapsed since first play: <span id="time-5" class="font-bold text-gray-800">0.00</span>s</p>
+    </div>
+
+    <p class="font-semibold text-gray-800 mb-3 text-lg">
+        For each option: Is it the same rhythm?
+    </p>
+    <div class="text-sm text-gray-500 mb-4 flex justify-between">
+        <span class="font-bold text-red-500">1 = Not a Match at all</span>
+        <span class="font-bold text-green-500">5 = Perfect Match</span>
+    </div>
+
+    <div id="options-5" class="space-y-4">
+        <div class="p-3 border rounded-lg flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-50">
+            <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                <span class="font-bold text-lg w-8">A.</span>
+                <audio id="audio-5-A" src="audio/q5_option_A.mp3" preload="auto" class="hidden"></audio>
+                <button id="btn-play-5-A" onclick="playOption(5, 'A')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">Play Option A</button>
+            </div>
+            <div id="rating-container-5-A" class="w-full sm:w-auto overflow-x-auto"></div>
+        </div>
+        <div class="p-3 border rounded-lg flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-50">
+            <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                <span class="font-bold text-lg w-8">B.</span>
+                <audio id="audio-5-B" src="audio/q5_option_B.mp3" preload="auto" class="hidden"></audio>
+                <button id="btn-play-5-B" onclick="playOption(5, 'B')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">Play Option B</button>
+            </div>
+            <div id="rating-container-5-B" class="w-full sm:w-auto overflow-x-auto"></div>
+        </div>
+        <div class="p-3 border rounded-lg flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-50">
+            <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                <span class="font-bold text-lg w-8">C.</span>
+                <audio id="audio-5-C" src="audio/q5_option_C.mp3" preload="auto" class="hidden"></audio>
+                <button id="btn-play-5-C" onclick="playOption(5, 'C')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">Play Option C</button>
+            </div>
+            <div id="rating-container-5-C" class="w-full sm:w-auto overflow-x-auto"></div>
+        </div>
+        <div class="p-3 border rounded-lg flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-50">
+            <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                <span class="font-bold text-lg w-8">D.</span>
+                <audio id="audio-5-D" src="audio/q5_option_D.mp3" preload="auto" class="hidden"></audio>
+                <button id="btn-play-5-D" onclick="playOption(5, 'D')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">Play Option D</button>
+            </div>
+            <div id="rating-container-5-D" class="w-full sm:w-auto overflow-x-auto"></div>
+        </div>
+        <div class="p-3 border rounded-lg flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-50">
+            <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                <span class="font-bold text-lg w-8">E.</span>
+                <audio id="audio-5-E" src="audio/q5_option_E.mp3" preload="auto" class="hidden"></audio>
+                <button id="btn-play-5-E" onclick="playOption(5, 'E')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">Play Option E</button>
+            </div>
+            <div id="rating-container-5-E" class="w-full sm:w-auto overflow-x-auto"></div>
+        </div>
+        
+        <div class="p-3 border rounded-lg flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-gray-50">
+            <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                <span class="font-bold text-lg w-8">F.</span>
+                <audio id="audio-5-F" src="audio/q5_option_F.mp3" preload="auto" class="hidden"></audio>
+                <button id="btn-play-5-F" onclick="playOption(5, 'F')" class="px-4 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">Play Option F</button>
+            </div>
+            <div id="rating-container-5-F" class="w-full sm:w-auto overflow-x-auto"></div>
+        </div>
+    </div>
+
+    <div class="mt-6 pt-4 border-t">
+        <button id="next-5" onclick="nextQuestion(5)" disabled
+                class="w-full py-3 bg-gray-400 text-white font-bold rounded-lg transition duration-150"
+                title="Please rate all 6 options to submit all data.">
+            Submit Final Survey &check;
+        </button>
+    </div>
+</div>
+
+
+            
+<div id="q-complete" class="question-card bg-white p-6 rounded-xl hidden text-center">
+                <h2 class="text-3xl font-bold text-green-600 mb-4">Survey Complete!</h2>
+                <p class="text-gray-600 mb-6">Thank you for participating. Your data has been securely logged.</p>
+                <p id="feedback" class="font-semibold text-lg text-gray-800">test feedback text</p>
+                <div id="completion-action-area" class="mt-6 space-y-4">
+                    </div>
+            </div>
+
+<div id="q-info" class="question-card bg-white p-6 rounded-xl hidden">
+    <h2 class="text-2xl font-semibold mb-4 text-indigo-600">Information on Test Setup</h2>
+    <div class="space-y-4 text-gray-700">
+                <p class="text-gray-600 mb-6">The purpose of this study is to see how rhythmic complexity--manipulated through note density and syncopation--affects short-term auditory memory recall.</p>
+                <p class="text-gray-600 mb-6">We hypothesize that syncopation is the primary driver for rhythmic recall difficulty. Note density is only secondary to syncopation -- higher note density only *amplifies* the complexity of the rhythm, especially when a rhythm is very syncopated.</p>
+                <p class="text-gray-600 mb-6">Rhythmic discrimination was our primary behavioral measure used to assess recall success.</p>
+                <p class="text-gray-600 mb-6">CONTEXT: </p>
+                <p class="text-gray-600 mb-6">In cognitive and musical terms (I'm gonna refine this later), in order for us to memorize a rhythm, we must encode it into our memory. Our brains follow a grid-like encoding for rhythm, commonly known as "the beat." </p>
+                <p class="text-gray-600 mb-6">HYPOTHESIS JUSTIFICATION: </p>
+                <p class="text-gray-600 mb-6">Syncopation (by definition... literally) violates the grid-like encoding that our brains follow, and therefore makes it harder to memorize/recall/replicate a rhythm. We predict that syncopation will cause the encoding of the rhythm to be more difficult/strenuous/error-prone. </p>
+                <p class="text-gray-600 mb-6">"More complex" rhythms would also show higher cognitive load. Audio recordings would be replayed, time it takes to answer the questions should take longer (e.g. thinking), and the mean polarity between exact rhythms and near-foil rhythms would be smaller. </p>
+                <p class="text-gray-600 mb-6">TEST SETUP </p>
+                <p class="text-gray-600 mb-6">This mini experimental study is just a prototype; hence, to keep the test succinct, we used a binary-selection method for the design, aka a Cartesian Product, of all possible variations, for the questions. </p>
+                <p class="text-gray-600 mb-6">high note density, low note density, </p>
+                <p class="text-gray-600 mb-6">high syncopation, low syncopation.</p>
+                <p class="text-gray-600 mb-6">The option rhythms included 1 exact rhythm, with 5 incorrect (foil) rhythms. For example, if the original rhythm had high note density (HD) and high syncopation (HS), then the answer choices would be: </p>
+                <p class="text-gray-600 mb-6">HD, HS (exact answer)</p>
+                <p class="text-gray-600 mb-6">HD, HS (near-foil)</p>
+                <p class="text-gray-600 mb-6">HD, HS (near-foil)</p>
+                <p class="text-gray-600 mb-6">LD, HS (far-foil)</p>
+                <p class="text-gray-600 mb-6">HD, LS (far-foil)</p>
+                <p class="text-gray-600 mb-6">LD, LS (far-foil, completely different, serves as a control)</p>
+                <p class="text-gray-600 mb-6">EXPERIMENT ANALYSIS </p>
+                <p class="text-gray-600 mb-6">Since there are 2 near-foils, the measurement for the ability to discriminate between answer choices is as follows: </p>
+                <p class="text-gray-600 mb-6">discrimination = exact_rhythm - avg(near_foils) </p>
+                <p class="text-gray-600 mb-6">We should see that simpler rhythms have a way bigger discrimination score (because they're more easily and properly encoded in our brains), whereas difficult rhythms would have smaller discrimination score (information overload, difficulty in encoding). </p>
+                <p class="text-gray-600 mb-6">OTHER DETAILS </p>
+                <p class="text-gray-600 mb-6">Project ideas, experiment setup, hypotheses, and cognitive justifications above are all entirely my own. No AI was used.</p>
+                <p class="text-gray-600 mb-6">The code is a custom-written vanilla HTML and Javascript webpage. Additional (hidden) metrics were also tracked: response time, and rhythm replays.</p>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    <script>
+        // REPLACE THIS with your working GAS URL
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwuV7n9uHxWdjzKE-OdbI-lZEzo9ONX8-8KIbdgJm1tmhLjZb42Bkbv3e3UUEe502175Q/exec"; 
+        const TOTAL_QUESTIONS = 5; // 1 Dummy + 4 Real
+        const Q_OPTIONS = {
+            1: ['A', 'B'], // Dummy question uses only A and B
+            // MODIFIED: Added 'F' to the list of options for main questions 2, 3, 4, 5
+            2: ['A', 'B', 'C', 'D', 'E', 'F'], 
+            3: ['A', 'B', 'C', 'D', 'E', 'F'],
+            4: ['A', 'B', 'C', 'D', 'E', 'F'],
+            5: ['A', 'B', 'C', 'D', 'E', 'F'],
+        };
+        
+        let currentPage = 0; // 0 for Consent, 1-5 for Questions
+        let consentName = '';
+        let musicalHistory = '';
+
+        // Data Structure for Tracking (Tracking 6 ratings per question, even if only 2 options exist for Q1)
+        const surveyData = {};
+        const timers = {}; // To hold the setInterval IDs
+
+        // Initialize tracking object for all 5 questions
+        for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
+            surveyData[i] = {
+                repetitions: 0,
+                startTime: 0,
+                time_ms: 0,
+                // Initializing all possible ratings to null (Added F)
+                ratings: { A: null, B: null, C: null, D: null, E: null, F: null } 
+            };
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Show the consent page first
+            document.getElementById(`q-consent`).classList.remove('hidden');
+            
+            // Setup the horizontal rating buttons for all options in all questions
+            initRatingSelectors();
+            
+            // Update the text in the button labels to reflect the new tracking method (optional aesthetic change)
+            for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
+                const button = document.getElementById(`play-button-q${i}`);
+                if (button) {
+                    button.innerHTML = `Play Original Rhythm (Total Plays: <span id="plays-${i}">0</span>)`;
+                }
+            }
+        });
+
+        // --- Flow Control Functions ---
+
+        /**
+         * Checks consent requirements and starts the survey flow.
+         */
+        function startSurvey() {
+            const consentNameInput = document.getElementById('consent-name');
+            if (!consentNameInput.value.trim()) {
+                showModalMessage("Consent Required", "Please enter your name to acknowledge the disclosure and begin the survey.", "I Understand");
+                return;
+            }
+            
+            // Record consent data
+            consentName = consentNameInput.value.trim();
+            musicalHistory = document.getElementById('musical-history').value.trim();
+
+            // Hide consent, show Q1 (Dummy/Training)
+            document.getElementById('q-consent').classList.add('hidden');
+            currentPage = 1;
+            document.getElementById(`q-${currentPage}`).classList.remove('hidden');
+            
+            // NEW: Initialize state (disable everything until original played)
+            initQuestionState(currentPage);
+        }
+
+        /**
+         * Toggles between the Q-Complete and Q-Info pages.
+         */
+        function showTestSetupInfo() {
+            // Hide current page
+            if (currentPage === 0) {
+                 document.getElementById('q-consent').classList.add('hidden');
+            } else if (currentPage === 'complete') {
+                 document.getElementById('q-complete').classList.add('hidden');
+            } else if (currentPage >= 1 && currentPage <= TOTAL_QUESTIONS) {
+                document.getElementById(`q-${currentPage}`).classList.add('hidden');
+            }
+            
+            // Set a special 'complete' page indicator if coming from elsewhere, 
+            // so we know where to go back to.
+            if (currentPage !== 'complete') {
+                currentPage = 'info'; 
+            }
+            
+            document.getElementById('q-info').classList.remove('hidden');
+            
+            // Scroll to the top of the page (User Request)
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        /**
+         * Toggles back to the Q-Complete page (or consent if info was first).
+         */
+        function showCompletePage() {
+            document.getElementById('q-info').classList.add('hidden');
+            // If the user viewed info from the completion page, return there
+            if (document.getElementById('q-complete').classList.contains('hidden') === false) {
+                 document.getElementById('q-complete').classList.remove('hidden');
+                 currentPage = 'complete'; // Or whatever indicates the complete page
+            } else {
+                 // Otherwise, if they accessed it from the consent page (dev button), show consent again
+                 document.getElementById('q-consent').classList.remove('hidden');
+                 currentPage = 0;
+            }
+        }
+
+
+        /**
+         * Calculates time and advances to the next question or final submission.
+         * @param {number} currentQId - The ID of the question just completed.
+         */
+        function nextQuestion(currentQId) {
+            const data = surveyData[currentQId];
+
+            // Safety check
+            const optionsToCheck = Q_OPTIONS[currentQId];
+            const allRated = optionsToCheck.every(option => data.ratings[option] !== null);
+            if (!allRated) {
+                // NOTE: Changed to 1-5 scale in message
+                showModalMessage(`Question ${currentQId} Incomplete`, `Please provide a rating (1-5) for all ${optionsToCheck.length} options before moving on.`, "Close");
+                return;
+            }
+
+            // 1. STOP TIMER and record final time
+            if (data.startTime > 0) {
+                // Stop any currently running timer for this question
+                if (timers[currentQId]) {
+                    clearInterval(timers[currentQId]); // Stop the running interval
+                    delete timers[currentQId];
+                }
+                
+                // Record the final elapsed time
+                data.time_ms = Date.now() - data.startTime; // Record the final elapsed time
+                document.getElementById(`time-${currentQId}`).innerText = (data.time_ms / 1000).toFixed(2) + "s (Final)";
+            } else {
+                 // Set time to 0 if the original was never played (but options were rated)
+                 data.time_ms = 0; 
+            }
+
+            // 2. Determine next step
+            if (currentQId < TOTAL_QUESTIONS) {
+                // Advance to the next question
+                document.getElementById(`q-${currentQId}`).classList.add('hidden');
+                currentPage = currentQId + 1;
+                document.getElementById(`q-${currentPage}`).classList.remove('hidden');
+                // NEW: Initialize state (disable everything until original played)
+                initQuestionState(currentPage);
+            } else {
+                // Final submission (Q5)
+                submitSurvey();
+            }
+        }
+        
+        // --- NEW: State Management Logic ---
+        
+        // Helper to toggle visual and functional disabled state
+        function toggleElementState(elementId, disable) {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+            
+            if (disable) {
+                el.classList.add('disabled-interaction');
+                if(el.tagName === "BUTTON") el.disabled = true;
+            } else {
+                el.classList.remove('disabled-interaction');
+                if(el.tagName === "BUTTON") el.disabled = false;
+            }
+        }
+
+        /**
+         * Called when a question loads. Disables all options and ratings.
+         */
+        function initQuestionState(qId) {
+            const options = Q_OPTIONS[qId];
+            options.forEach(opt => {
+                // Disable Option Rhythm Button
+                toggleElementState(`btn-play-${qId}-${opt}`, true);
+                // Disable Rating Container
+                toggleElementState(`rating-container-${qId}-${opt}`, true);
+            });
+        }
+        
+        /**
+         * Central logic to enforce sequence:
+         * 1. Play Original -> Unlock Option Buttons (keep ratings locked).
+         * 2. Play Option X -> Lock Other Option Buttons, Unlock Rating X.
+         * 3. Rate Option X -> Lock Rating X, Lock Option X, Unlock Other Unrated Option Buttons.
+         */
+        function updateInteractionState(qId, triggerType, specificOption = null) {
+             const options = Q_OPTIONS[qId];
+             
+             if (triggerType === 'ORIGINAL_PLAYED') {
+                 // Unlock all option buttons, keep ratings locked
+                 options.forEach(opt => {
+                     toggleElementState(`btn-play-${qId}-${opt}`, false);
+                     toggleElementState(`rating-container-${qId}-${opt}`, true);
+                 });
+             }
+             else if (triggerType === 'OPTION_PLAYED') {
+                 // Disable other option buttons, enable current rating
+                 options.forEach(opt => {
+                     if (opt === specificOption) {
+                         // Keep current option button active (user might want to replay before rating)
+                         // Enable current rating
+                         toggleElementState(`rating-container-${qId}-${opt}`, false);
+                     } else {
+                         // Disable other option buttons
+                         toggleElementState(`btn-play-${qId}-${opt}`, true);
+                         // Keep other ratings disabled
+                         toggleElementState(`rating-container-${qId}-${opt}`, true);
+                     }
+                 });
+             }
+             else if (triggerType === 'RATING_SELECTED') {
+                 // Disable current rating and current option button
+                 toggleElementState(`rating-container-${qId}-${specificOption}`, true);
+                 toggleElementState(`btn-play-${qId}-${specificOption}`, true);
+                 
+                 // Re-enable other option buttons IF they haven't been rated yet
+                 const data = surveyData[qId];
+                 options.forEach(opt => {
+                     if (opt !== specificOption && data.ratings[opt] === null) {
+                         toggleElementState(`btn-play-${qId}-${opt}`, false);
+                     }
+                 });
+             }
+        }
+
+
+        // --- Rating/Completion Functions ---
+        
+        /**
+         * Checks if all required options for the current question have a non-null rating.
+         * @param {number} qId - The current question ID.
+         */
+        function checkCompletion(qId) {
+            const data = surveyData[qId];
+            const nextButton = document.getElementById(`next-${qId}`);
+            
+            // Use the correct set of options for this question
+            const optionsToCheck = Q_OPTIONS[qId];
+
+            // Check if all *required* rating values are non-null
+            const allRated = optionsToCheck.every(option => data.ratings[option] !== null);
+
+            const optionsCount = optionsToCheck.length;
+
+            if (allRated) {
+                nextButton.disabled = false;
+                nextButton.classList.remove('bg-gray-400', 'cursor-default');
+                // Use different color for Next vs Final Submit
+                if (qId === TOTAL_QUESTIONS) {
+                    nextButton.classList.add('bg-green-600', 'hover:bg-green-700');
+                    nextButton.title = "Submit final survey data.";
+                } else {
+                    nextButton.classList.add('bg-indigo-500', 'hover:bg-indigo-700');
+                    nextButton.title = "Move to the next question.";
+                }
+            } else {
+                nextButton.disabled = true;
+                nextButton.classList.add('bg-gray-400', 'cursor-default');
+                nextButton.classList.remove('bg-indigo-500', 'hover:bg-indigo-700', 'bg-green-600', 'hover:bg-green-700');
+                // NOTE: Changed to 1-5 scale in message
+                nextButton.title = `Please rate all ${optionsCount} options (1-5) to proceed.`;
+            }
+        }
+
+        // --- Audio Control Functions ---
+
+        /**
+         * Plays an audio sample.
+         */
+        function playAudio(audioId) {
+            const audio = document.getElementById(audioId);
+            if (audio) {
+                audio.currentTime = 0; // Rewind to start
+                audio.play().catch(e => console.error("Audio playback failed:", e)); 
+            } else {
+                console.warn(`Audio element not found: ${audioId}. (Using placeholder paths)`);
+            }
+        }
+
+        /**
+         * Disables the main question audio play button and updates its style.
+         * The button is permanently disabled after the first option is played.
+         * @param {number} qId - The question ID (1-5).
+         */
+        function disableQuestionAudioButton(qId) {
+            const button = document.getElementById(`play-button-q${qId}`);
+            if (button) {
+                button.disabled = true;
+                // Update styling to appear disabled (greyed out)
+                button.classList.remove('bg-indigo-500', 'hover:bg-indigo-700');
+                button.classList.add('bg-gray-400', 'cursor-not-allowed');
+                button.title = "Original Rhythm limit reached or an option was played.";
+            }
+        }
+
+
+        /**
+         * Handles the click on the MAIN Question audio play button.
+         * Starts the timer on the first click and disables the button after 3 plays.
+         * Increments the total play counter (data.repetitions).
+         */
+        function handlePlayClick(qId) {
+            const data = surveyData[qId];
+            const button = document.getElementById(`play-button-q${qId}`);
+
+            // Safety check: if already disabled, do nothing.
+            if (button && button.disabled) return; 
+
+            // 1. Start the timer on the very first play
+            if (data.startTime === 0) {
+                data.startTime = Date.now();
+                // Start tracking time display for this question
+                timers[qId] = setInterval(() => updateTimeDisplay(qId), 100);
+            }
+
+            // 2. Increment the repetition count
+            data.repetitions++;
+            document.getElementById(`plays-${qId}`).innerText = data.repetitions;
+
+            // 3. Play the audio
+            playAudio(`audio-q${qId}`);
+            
+            // NEW: Logic to enable option buttons
+            updateInteractionState(qId, 'ORIGINAL_PLAYED');
+
+            // *** Original play count limit implementation ***
+            if (!data.original_repetitions) {
+                data.original_repetitions = 0;
+            }
+            data.original_repetitions++;
+            
+            if (data.original_repetitions >= 3) {
+                disableQuestionAudioButton(qId);
+            }
+        }
+
+        /**
+         * Handles playback of the multiple choice options.
+         * Disables the main question button immediately upon first option play.
+         * Increments the total play counter (data.repetitions).
+         */
+        function playOption(qId, optionId) {
+            const data = surveyData[qId];
+            
+            // 1. Increment the total repetition count for the question (Original + Options)
+            data.repetitions++;
+            // Update the display for the total count (Original and Options)
+            const playsDisplay = document.getElementById(`plays-${qId}`);
+            if (playsDisplay) {
+                playsDisplay.innerText = data.repetitions;
+            }
+
+            // Disable the main question button immediately upon playing any option
+            disableQuestionAudioButton(qId);
+            
+            // NEW: Logic to lock other options and enable rating
+            updateInteractionState(qId, 'OPTION_PLAYED', optionId);
+            
+            playAudio(`audio-${qId}-${optionId}`);
+        }
+        
+        /**
+         * Handles click on a rating button, updates state, and manages visual feedback.
+         */
+        function handleRatingClick(qId, optionId, value, element) {
+            const data = surveyData[qId];
+            
+            // 1. Update data state
+            data.ratings[optionId] = value;
+            
+            // 2. Update visual state
+            const container = element.parentElement;
+            if (container) {
+                // Remove active class from all siblings
+                container.querySelectorAll('.rating-option').forEach(option => {
+                    option.classList.remove('active-option');
+                    // Recalculate and re-apply gradient color since .active-option overrides inline style
+                    const val = parseInt(option.dataset.value);
+                    option.style.backgroundColor = getGradientColor(val);
+                });
+            }
+            // Add active class to the clicked element (this applies the blue override)
+            element.classList.add('active-option');
+            
+            // NEW: Lock this rating, lock this option play button, unlock others
+            updateInteractionState(qId, 'RATING_SELECTED', optionId);
+
+            // 3. Check completion for validation (only affects the Next button state)
+            checkCompletion(qId);
+        }
+
+        // --- UI/Helper Functions ---
+
+        /**
+         * Continuous function to update the elapsed time display.
+         */
+        function updateTimeDisplay(qId) {
+            const data = surveyData[qId];
+            const displayElement = document.getElementById(`time-${qId}`);
+            
+            // Only update time if the timer has been started
+            if (data.startTime > 0) {
+                const elapsedMs = Date.now() - data.startTime;
+                displayElement.innerText = (elapsedMs / 1000).toFixed(2) + "s";
+            }
+        }
+
+        /**
+         * Calculates an RGB color value on a gradient from a pastel Red (1) to White (3) to a pastel Green (5).
+         * NOTE: Reworked for 1-5 scale.
+         */
+        function getGradientColor(value) {
+            let r, g, b;
+            const maxVal = 5;
+            const midVal = 3; // The "white" point for 1-5 scale
+            const minVal = 1;
+
+            // Define target pastel colors (Lighter, less saturated)
+            const pastelRed = { r: 255, g: 190, b: 190 };   
+            const whiteColor = { r: 255, g: 255, b: 255 };
+            const pastelGreen = { r: 190, g: 255, b: 190 }; 
+
+            if (value <= midVal) {
+                // Phase 1: Pastel Red (1) to White (3)
+                // Normalize to 0 (at minVal) to 1 (at midVal)
+                const ratio = (value - minVal) / (midVal - minVal); 
+                r = pastelRed.r + (whiteColor.r - pastelRed.r) * ratio;
+                g = pastelRed.g + (whiteColor.g - pastelRed.g) * ratio;
+                b = pastelRed.b + (whiteColor.b - pastelRed.b) * ratio;
+            } else {
+                // Phase 2: White (3) to Pastel Green (5)
+                // Normalize to 0 (at midVal) to 1 (at maxVal)
+                const ratio = (value - midVal) / (maxVal - midVal);
+                r = whiteColor.r + (pastelGreen.r - whiteColor.r) * ratio;
+                g = whiteColor.g + (pastelGreen.g - whiteColor.g) * ratio;
+                b = whiteColor.b + (pastelGreen.b - whiteColor.b) * ratio;
+            }
+            
+            return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
+        }
+
+        /**
+         * Generates the HTML for the 1-5 rating buttons.
+         * NOTE: Reworked to loop from 1 to 5.
+         */
+        function generateRatingHtml(qId, optionId) {
+            let html = `<div class="flex flex-row gap-1.5 md:gap-2 overflow-x-auto justify-start flex-nowrap py-1">`;
+            for (let i = 1; i <= 5; i++) { // Changed range from 0-10 to 1-5
+                const color = getGradientColor(i);
+                
+                html += `
+                    <button data-q="${qId}" data-option="${optionId}" data-value="${i}"
+                            style="background-color: ${color};"
+                            onclick="handleRatingClick(${qId}, '${optionId}', ${i}, this)"
+                            class="rating-option p-2 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-md shadow-sm text-xs md:text-sm hover:border-blue-400">
+                        ${i}
+                    </button>`;
+            }
+            html += `</div>`;
+            return html;
+        }
+
+        /**
+         * Inserts the rating button HTML into all relevant containers on page load.
+         */
+        function initRatingSelectors() {
+            for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
+                // Use the correct set of options for this question
+                const options = Q_OPTIONS[i]; 
+                options.forEach(option => {
+                    const containerId = `rating-container-${i}-${option}`;
+                    const container = document.getElementById(containerId);
+                    if (container) {
+                        container.innerHTML = generateRatingHtml(i, option);
+                    }
+                });
+            }
+        }
+        
+        // Simple modal replacement for forbidden alert()
+        function showModalMessage(title, message, buttonText) {
+            const modalHtml = `
+                <div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex justify-center items-center" id="custom-modal">
+                    <div class="bg-white p-6 rounded-lg shadow-xl w-96">
+                        <h3 class="text-xl font-bold mb-4 text-red-600">${title}</h3>
+                        <p class="mb-6 text-gray-700">${message}</p>
+                        <button onclick="document.getElementById('custom-modal').remove()" 
+                                class="w-full py-2 bg-indigo-500 text-white font-semibold rounded-lg hover:bg-indigo-700">
+                            ${buttonText}
+                        </button>
+                    </div>
+                </div>`;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+        }
+
+
+        // --- Final Submission ---
+        
+        /**
+         * Final function to package and submit all data to Google Apps Script.
+         */
+        async function submitSurvey() {
+            document.getElementById(`q-${TOTAL_QUESTIONS}`).classList.add('hidden');
+            document.getElementById('q-complete').classList.remove('hidden');
+            currentPage = 'complete'; // Update page tracker
+            document.getElementById('feedback').innerText = "Submitting data, please wait...";
+            
+            // Clear previous action area content
+            const actionArea = document.getElementById('completion-action-area');
+            actionArea.innerHTML = '';
+
+            const payload = {
+                consent_name: consentName,
+                musical_history: musicalHistory,
+            };
+
+            // Collect all data for all 5 questions
+            for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
+                const data = surveyData[i];
+                
+                // Add common metrics
+                // This now tracks the total combined plays (Original + Options)
+                payload[`q${i}_repetitions`] = data.repetitions; 
+                payload[`q${i}_time_ms`] = data.time_ms;
+
+                // Add only the ratings for the options that were present (A, B for Q1; A-F for Q2-Q5)
+                const optionsToInclude = Q_OPTIONS[i];
+                optionsToInclude.forEach(option => {
+                    payload[`q${i}_rating_${option}`] = data.ratings[option];
+                });
+            }
+            
+            console.log("Submitting Payload:", payload);
+
+            // Send the data to the Google Apps Script Web App
+            try {
+                // NOTE: Replace GAS_URL with your deployed script URL
+                const response = await fetch(GAS_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    cache: 'no-cache',
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    document.getElementById('feedback').classList.add('text-green-500');
+                    document.getElementById('feedback').innerText = "✅ Submission Successful! Thank you for completing the survey.";
+
+                    // ADD NEW BUTTON AND LINK
+                    actionArea.innerHTML = `
+                        <button onclick="showTestSetupInfo()"
+                                class="w-full sm:w-1/2 py-2 bg-indigo-500 text-white font-bold rounded-lg shadow-md hover:bg-indigo-700 transition duration-150">
+                            Curious? Here's Test Setup Information!
+                        </button>`;
+                        
+                } else {
+                    document.getElementById('feedback').classList.add('text-red-500');
+                    document.getElementById('feedback').innerText = "❌ Submission Failed (Server Error): " + result.message;
+                }
+
+            } catch (error) {
+                document.getElementById('feedback').classList.add('text-red-500');
+                document.getElementById('feedback').innerText = "❌ Submission Failed due to network error or CORS issue. Check the browser console.";
+                console.error("Submission Error:", error);
+            }
+        }
+    </script>
+</body>
+</html>
