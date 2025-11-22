@@ -68,6 +68,7 @@
         <ul class="list-disc list-inside ml-4 space-y-1">
             <li>The Original Rhythm may be played up to three (3) times.</li>
             <li>Playing any Option Rhythm will disable the Original Rhythm play button. Rely on your memory!</li>
+            <li>You CANNOT change your answer after selecting one.</li>
             <li>You must rate all options (1-5) before moving to the next question.</li>
         </ul>
     </div>
@@ -89,13 +90,7 @@
     </div>
 
     <div class="mt-6 pt-4 border-t space-y-4">
-<!--
-        <button id="dev-info" onclick="showTestSetupInfo()"
-                class="w-full py-2 bg-gray-500 text-white font-bold rounded-lg shadow-md hover:bg-gray-700 transition duration-150 text-sm">
-            Developer Info (Debug) 🛠️
-        </button>
--->
-        <button id="start-survey" onclick="startSurvey()"
+<button id="start-survey" onclick="startSurvey()"
                 class="w-full py-3 bg-indigo-500 text-white font-bold rounded-lg shadow-md hover:bg-indigo-700 transition duration-150">
             Start Survey &rarr;
         </button>
@@ -113,16 +108,20 @@
                 Play Original Rhythm (Total Plays: <span id="plays-1">0</span>)
             </button>
         </div>
-        <p class="mt-3 text-sm text-gray-500">Time elapsed since first play: <span id="time-1" class="font-bold text-gray-800">0.00</span>s</p>
+        <p class="mt-3 text-sm text-gray-500 opacity-0">Time elapsed since first play: <span id="time-1" class="font-bold text-gray-800">0.00</span>s</p>
     </div>
 
     <p class="font-semibold text-gray-800 mb-3 text-lg">
-        For each option: Is it the same rhythm?
+        For each option: Is it the same rhythm? (PRACTICE QUESTION)
     </p>
-    <div class="text-sm text-gray-500 mb-4 flex justify-between">
-        <span class="font-bold text-red-500">1 = Not a Match at all</span>
-        <span class="font-bold text-green-500">5 = Perfect Match</span>
+    <div class="text-sm text-gray-500 mb-4 space-y-1">
+        <p><span class="font-bold" style="color: rgb(255, 190, 190); text-shadow: 1px 1px 1px #800000;">1:</span> I know exactly what's different (or, they're entirely different)</p>
+        <p><span class="font-bold" style="color: rgb(255, 222, 222); text-shadow: 1px 1px 1px #800000;">2:</span> I think something is different</p>
+        <p><span class="font-bold" style="color: rgb(156, 163, 175); text-shadow: 1.5px 1.5px 1px #9CA3AF;">3:</span> I'm not sure if there is a difference, I'm not sure if they match</p>
+        <p><span class="font-bold" style="color: rgb(206, 255, 206); text-shadow: 1px 1px 1px #008000;">4:</span> I think they match</p>
+        <p><span class="font-bold" style="color: rgb(170, 255, 170); text-shadow: 1px 1px 1px #008000;">5:</span> I know they're the same</p>
     </div>
+
 
     <div id="options-1" class="space-y-4">
         
@@ -145,6 +144,17 @@
         </div>
     </div>
 
+    <p class="font-semibold text-gray-800 mb-3 text-lg">
+    </p>
+
+    <p class="font-semibold text-gray-800 mb-3 text-lg">
+        ⚠️ If you have any questions, please ask the researcher before continuing. ⚠️
+    </p>
+
+    <p class="font-semibold text-gray-800 mb-3 text-lg">
+        ⚠️ Please complete the rest of the survey in one sitting. ⚠️
+    </p>
+
     <div class="mt-6 pt-4 border-t">
         <button id="next-1" onclick="nextQuestion(1)" disabled
                 class="w-full py-3 bg-gray-400 text-white font-bold rounded-lg transition duration-150"
@@ -165,15 +175,18 @@
                 Play Original Rhythm (Total Plays: <span id="plays-2">0</span>)
             </button>
         </div>
-        <p class="mt-3 text-sm text-gray-500">Time elapsed since first play: <span id="time-2" class="font-bold text-gray-800">0.00</span>s</p>
+        <p class="mt-3 text-sm text-gray-500 opacity-0">Time elapsed since first play: <span id="time-2" class="font-bold text-gray-800">0.00</span>s</p>
     </div>
 
     <p class="font-semibold text-gray-800 mb-3 text-lg">
         For each option: Is it the same rhythm?
     </p>
-    <div class="text-sm text-gray-500 mb-4 flex justify-between">
-        <span class="font-bold text-red-500">1 = Not a Match at all</span>
-        <span class="font-bold text-green-500">5 = Perfect Match</span>
+    <div class="text-sm text-gray-500 mb-4 space-y-1">
+        <p><span class="font-bold" style="color: rgb(255, 190, 190); text-shadow: 1px 1px 1px #800000;">1:</span> I know exactly what's different (or, they're entirely different)</p>
+        <p><span class="font-bold" style="color: rgb(255, 222, 222); text-shadow: 1px 1px 1px #800000;">2:</span> I think something is different</p>
+        <p><span class="font-bold" style="color: rgb(156, 163, 175); text-shadow: 1.5px 1.5px 1px #9CA3AF;">3:</span> I'm not sure if there is a difference, I'm not sure if they match</p>
+        <p><span class="font-bold" style="color: rgb(206, 255, 206); text-shadow: 1px 1px 1px #008000;">4:</span> I think they match</p>
+        <p><span class="font-bold" style="color: rgb(170, 255, 170); text-shadow: 1px 1px 1px #008000;">5:</span> I know they're the same</p>
     </div>
 
     <div id="options-2" class="space-y-4">
@@ -265,15 +278,18 @@
                 Play Original Rhythm (Total Plays: <span id="plays-3">0</span>)
             </button>
         </div>
-        <p class="mt-3 text-sm text-gray-500">Time elapsed since first play: <span id="time-3" class="font-bold text-gray-800">0.00</span>s</p>
+        <p class="mt-3 text-sm text-gray-500 opacity-0">Time elapsed since first play: <span id="time-3" class="font-bold text-gray-800">0.00</span>s</p>
     </div>
 
     <p class="font-semibold text-gray-800 mb-3 text-lg">
         For each option: Is it the same rhythm?
     </p>
-    <div class="text-sm text-gray-500 mb-4 flex justify-between">
-        <span class="font-bold text-red-500">1 = Not a Match at all</span>
-        <span class="font-bold text-green-500">5 = Perfect Match</span>
+    <div class="text-sm text-gray-500 mb-4 space-y-1">
+        <p><span class="font-bold" style="color: rgb(255, 190, 190); text-shadow: 1px 1px 1px #800000;">1:</span> I know exactly what's different (or, they're entirely different)</p>
+        <p><span class="font-bold" style="color: rgb(255, 222, 222); text-shadow: 1px 1px 1px #800000;">2:</span> I think something is different</p>
+        <p><span class="font-bold" style="color: rgb(156, 163, 175); text-shadow: 1.5px 1.5px 1px #9CA3AF;">3:</span> I'm not sure if there is a difference, I'm not sure if they match</p>
+        <p><span class="font-bold" style="color: rgb(206, 255, 206); text-shadow: 1px 1px 1px #008000;">4:</span> I think they match</p>
+        <p><span class="font-bold" style="color: rgb(170, 255, 170); text-shadow: 1px 1px 1px #008000;">5:</span> I know they're the same</p>
     </div>
 
     <div id="options-3" class="space-y-4">
@@ -348,15 +364,18 @@
                 Play Original Rhythm (Total Plays: <span id="plays-4">0</span>)
             </button>
         </div>
-        <p class="mt-3 text-sm text-gray-500">Time elapsed since first play: <span id="time-4" class="font-bold text-gray-800">0.00</span>s</p>
+        <p class="mt-3 text-sm text-gray-500 opacity-0">Time elapsed since first play: <span id="time-4" class="font-bold text-gray-800">0.00</span>s</p>
     </div>
 
     <p class="font-semibold text-gray-800 mb-3 text-lg">
         For each option: Is it the same rhythm?
     </p>
-    <div class="text-sm text-gray-500 mb-4 flex justify-between">
-        <span class="font-bold text-red-500">1 = Not a Match at all</span>
-        <span class="font-bold text-green-500">5 = Perfect Match</span>
+    <div class="text-sm text-gray-500 mb-4 space-y-1">
+        <p><span class="font-bold" style="color: rgb(255, 190, 190); text-shadow: 1px 1px 1px #800000;">1:</span> I know exactly what's different (or, they're entirely different)</p>
+        <p><span class="font-bold" style="color: rgb(255, 222, 222); text-shadow: 1px 1px 1px #800000;">2:</span> I think something is different</p>
+        <p><span class="font-bold" style="color: rgb(156, 163, 175); text-shadow: 1.5px 1.5px 1px #9CA3AF;">3:</span> I'm not sure if there is a difference, I'm not sure if they match</p>
+        <p><span class="font-bold" style="color: rgb(206, 255, 206); text-shadow: 1px 1px 1px #008000;">4:</span> I think they match</p>
+        <p><span class="font-bold" style="color: rgb(170, 255, 170); text-shadow: 1px 1px 1px #008000;">5:</span> I know they're the same</p>
     </div>
 
     <div id="options-4" class="space-y-4">
@@ -419,7 +438,7 @@
         </button>
     </div>
 </div>
-            
+
 <div id="q-5" class="question-card bg-white p-6 rounded-xl hidden">
     <h2 class="text-2xl font-semibold mb-4 text-indigo-600">Question 4 of 4</h2>
     <div class="mb-6 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
@@ -431,15 +450,18 @@
                 Play Original Rhythm (Total Plays: <span id="plays-5">0</span>)
             </button>
         </div>
-        <p class="mt-3 text-sm text-gray-500">Time elapsed since first play: <span id="time-5" class="font-bold text-gray-800">0.00</span>s</p>
+        <p class="mt-3 text-sm text-gray-500 opacity-0">Time elapsed since first play: <span id="time-5" class="font-bold text-gray-800">0.00</span>s</p>
     </div>
 
     <p class="font-semibold text-gray-800 mb-3 text-lg">
         For each option: Is it the same rhythm?
     </p>
-    <div class="text-sm text-gray-500 mb-4 flex justify-between">
-        <span class="font-bold text-red-500">1 = Not a Match at all</span>
-        <span class="font-bold text-green-500">5 = Perfect Match</span>
+    <div class="text-sm text-gray-500 mb-4 space-y-1">
+        <p><span class="font-bold" style="color: rgb(255, 190, 190); text-shadow: 1px 1px 1px #800000;">1:</span> I know exactly what's different (or, they're entirely different)</p>
+        <p><span class="font-bold" style="color: rgb(255, 222, 222); text-shadow: 1px 1px 1px #800000;">2:</span> I think something is different</p>
+        <p><span class="font-bold" style="color: rgb(156, 163, 175); text-shadow: 1.5px 1.5px 1px #9CA3AF;">3:</span> I'm not sure if there is a difference, I'm not sure if they match</p>
+        <p><span class="font-bold" style="color: rgb(206, 255, 206); text-shadow: 1px 1px 1px #008000;">4:</span> I think they match</p>
+        <p><span class="font-bold" style="color: rgb(170, 255, 170); text-shadow: 1px 1px 1px #008000;">5:</span> I know they're the same</p>
     </div>
 
     <div id="options-5" class="space-y-4">
@@ -516,32 +538,39 @@
 <div id="q-info" class="question-card bg-white p-6 rounded-xl hidden">
     <h2 class="text-2xl font-semibold mb-4 text-indigo-600">Information on Test Setup</h2>
     <div class="space-y-4 text-gray-700">
+                <p class="text-gray-600 mb-6">This stuff is being written off the top of the dome. Gonna organize it in the final paper, not gonna spend too much effort on it here.</p>
+                <p class="text-gray-600 mb-6">======================</p>
                 <p class="text-gray-600 mb-6">The purpose of this study is to see how rhythmic complexity--manipulated through note density and syncopation--affects short-term auditory memory recall.</p>
                 <p class="text-gray-600 mb-6">We hypothesize that syncopation is the primary driver for rhythmic recall difficulty. Note density is only secondary to syncopation -- higher note density only *amplifies* the complexity of the rhythm, especially when a rhythm is very syncopated.</p>
-                <p class="text-gray-600 mb-6">Rhythmic discrimination was our primary behavioral measure used to assess recall success.</p>
+                <p class="text-gray-600 mb-6">Rhythmic discrimination was our primary behavioral measure used to assess recall success. That is, polarity* between the exact and the near-foils* (see definitions below).</p>
+                <p class="text-gray-600 mb-6">======================</p>
                 <p class="text-gray-600 mb-6">CONTEXT: </p>
                 <p class="text-gray-600 mb-6">In cognitive and musical terms (I'm gonna refine this later), in order for us to memorize a rhythm, we must encode it into our memory. Our brains follow a grid-like encoding for rhythm, commonly known as "the beat." </p>
+                <p class="text-gray-600 mb-6">======================</p>
                 <p class="text-gray-600 mb-6">HYPOTHESIS JUSTIFICATION: </p>
                 <p class="text-gray-600 mb-6">Syncopation (by definition... literally) violates the grid-like encoding that our brains follow, and therefore makes it harder to memorize/recall/replicate a rhythm. We predict that syncopation will cause the encoding of the rhythm to be more difficult/strenuous/error-prone. </p>
                 <p class="text-gray-600 mb-6">"More complex" rhythms would also show higher cognitive load. Audio recordings would be replayed, time it takes to answer the questions should take longer (e.g. thinking), and the mean polarity between exact rhythms and near-foil rhythms would be smaller. </p>
+                <p class="text-gray-600 mb-6">======================</p>
                 <p class="text-gray-600 mb-6">TEST SETUP </p>
                 <p class="text-gray-600 mb-6">This mini experimental study is just a prototype; hence, to keep the test succinct, we used a binary-selection method for the design, aka a Cartesian Product, of all possible variations, for the questions. </p>
                 <p class="text-gray-600 mb-6">high note density, low note density, </p>
                 <p class="text-gray-600 mb-6">high syncopation, low syncopation.</p>
-                <p class="text-gray-600 mb-6">The option rhythms included 1 exact rhythm, with 5 incorrect (foil) rhythms. For example, if the original rhythm had high note density (HD) and high syncopation (HS), then the answer choices would be: </p>
+                <p class="text-gray-600 mb-6">The option rhythms included 1 exact rhythm, with 5 incorrect rhythms (foils). Out of the 5 foils, 2 of them are near-foils and 3 are far-foils. i.e. if the original rhythm had high note density (HD) and high syncopation (HS), then the answer choices would be: </p>
                 <p class="text-gray-600 mb-6">HD, HS (exact answer)</p>
                 <p class="text-gray-600 mb-6">HD, HS (near-foil)</p>
                 <p class="text-gray-600 mb-6">HD, HS (near-foil)</p>
                 <p class="text-gray-600 mb-6">LD, HS (far-foil)</p>
                 <p class="text-gray-600 mb-6">HD, LS (far-foil)</p>
                 <p class="text-gray-600 mb-6">LD, LS (far-foil, completely different, serves as a control)</p>
+                <p class="text-gray-600 mb-6">======================</p>
                 <p class="text-gray-600 mb-6">EXPERIMENT ANALYSIS </p>
                 <p class="text-gray-600 mb-6">Since there are 2 near-foils, the measurement for the ability to discriminate between answer choices is as follows: </p>
                 <p class="text-gray-600 mb-6">discrimination = exact_rhythm - avg(near_foils) </p>
                 <p class="text-gray-600 mb-6">We should see that simpler rhythms have a way bigger discrimination score (because they're more easily and properly encoded in our brains), whereas difficult rhythms would have smaller discrimination score (information overload, difficulty in encoding). </p>
+                <p class="text-gray-600 mb-6">======================</p>
                 <p class="text-gray-600 mb-6">OTHER DETAILS </p>
-                <p class="text-gray-600 mb-6">Project ideas, experiment setup, hypotheses, and cognitive justifications above are all entirely my own. No AI was used.</p>
-                <p class="text-gray-600 mb-6">The code is a custom-written vanilla HTML and Javascript webpage. Additional (hidden) metrics were also tracked: response time, and rhythm replays.</p>
+                <p class="text-gray-600 mb-6">Project ideas, experiment setup, hypotheses, and cognitive justifications above are all entirely my own. No AI was used for the aforementioned.</p>
+                <p class="text-gray-600 mb-6">The code is a custom-written vanilla HTML and vanilla Javascript webpage, with tailwind CSS. Additional (hidden) metrics were also tracked: response time, and rhythm replays.</p>
     </div>
 </div>
 
